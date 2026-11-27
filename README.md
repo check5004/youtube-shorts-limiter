@@ -21,19 +21,23 @@ YouTubeショートの見すぎを防ぐChrome拡張機能です。スクロー�
 
 ## インストール
 
-Chromeウェブストアには公開していないため、デベロッパーモードで読み込みます。
+Chromeウェブストアには公開していないため、配布しているZIPをデベロッパーモードで読み込みます。
 
-1. このリポジトリをダウンロードして展開する（緑の「Code」ボタン →「Download ZIP」）、または `git clone` する
+1. [Releases](https://github.com/check5004/youtube-shorts-limiter/releases/latest) を開き、**Assets** にある `shorts-limiter-vX.Y.Z.zip` をダウンロードして展開する（「Source code」のZIPではありません）
 2. Chromeで `chrome://extensions` を開く
 3. 右上の「デベロッパーモード」をオンにする
-4. 「パッケージ化されていない拡張機能を読み込む」を押し、`manifest.json` があるフォルダを選ぶ
+4. 「パッケージ化されていない拡張機能を読み込む」を押し、展開した `shorts-limiter` フォルダ（`manifest.json` が入っているフォルダ）を選ぶ
 5. 開いていたYouTubeのタブを再読み込みする
 
 ※ 読み込んだフォルダは削除・移動しないでください（拡張機能が使えなくなります）。
 
 ### 更新するとき
 
-フォルダの中身を新しいものに置き換えてから（`git pull` でも可）、`chrome://extensions` の拡張機能カードにある再読み込みボタンを押してください。
+[Releases](https://github.com/check5004/youtube-shorts-limiter/releases/latest) から新しいZIPをダウンロードし、読み込んでいる `shorts-limiter` フォルダの中身を置き換えてから、`chrome://extensions` の拡張機能カードにある再読み込みボタンを押してください。
+
+### ソースから読み込む場合
+
+このリポジトリを `git clone` したフォルダ（直下に `manifest.json` があります）をそのまま読み込むこともできます。更新は `git pull` のあと再読み込みボタンを押します。
 
 ## ファイル構成
 
