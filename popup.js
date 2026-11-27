@@ -1,46 +1,70 @@
-// 設定はクリックだけで変更でき、変更するとすぐ保存される
+// 設定画面: 数値は −／＋ のクリックでも、キーボードでの直接入力でも変えられる。変更はすぐ保存される
 const DEFAULTS = { limitType: 'count', limit: 3, minutes: 5, resetMode: 'open', opensOn: false, maxOpens: 3, resetHour: 4 };
 const $ = (id) => document.getElementById(id);
-const MINUTES = [1, 2, 3, 5, 10, 15, 20, 30, 45, 60, 90, 120];
+const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String)) || key;
+const MINUTES = [1, 2, 3, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240];
+// 直接入力で受け付ける範囲
+const BOUNDS = { limit: [1, 99], minutes: [1, 240], maxOpens: [1, 20], resetHour: [0, 23] };
 let s = { ...DEFAULTS };
 let msgTimer = null;
 
-// 各ステッパーの値の候補
+document.documentElement.lang = chrome.i18n.getUILanguage().startsWith('ja') ? 'ja' : 'en';
+document.querySelectorAll('[data-i18n]').forEach((e) => { e.textContent = t(e.dataset.i18n); });
+
+function field(key) { return key === 'amount' ? (s.limitType === 'time' ? 'minutes' : 'limit') : key; }
+// −／＋ ボタンで移動する値の候補
 function steps(key) {
-  if (key === 'amount') return s.limitType === 'time' ? MINUTES : range(1, 20);
-  if (key === 'maxOpens') return range(1, 10);
-  if (key === 'resetHour') return range(0, 23);
+  const f = field(key);
+  if (f === 'minutes') return MINUTES;
+  const [a, b] = BOUNDS[f];
+  const r = [];
+  for (let i = a; i <= b; i++) r.push(i);
+  return r;
 }
-function range(a, b) { const r = []; for (let i = a; i <= b; i++) r.push(i); return r; }
-function getVal(key) {
-  if (key === 'amount') return s.limitType === 'time' ? s.minutes : s.limit;
-  return s[key];
+function unit(key) {
+  const f = field(key);
+  if (f === 'minutes') return t('sufMinutes');
+  if (f === 'resetHour') return t('sufHour');
+  return t('sufTimes');
 }
-function setVal(key, v) {
-  if (key === 'amount') { if (s.limitType === 'time') s.minutes = v; else s.limit = v; }
-  else s[key] = v;
-}
-function label(key, v) {
-  if (key === 'amount') return s.limitType === 'time' ? `${v}分` : `${v}回`;
-  if (key === 'maxOpens') return `${v}回`;
-  if (key === 'resetHour') return `${v}時`;
+function clamp(key, v) {
+  const [a, b] = BOUNDS[field(key)];
+  return Math.max(a, Math.min(b, v));
 }
 
 document.querySelectorAll('.stepper').forEach((el) => {
   const key = el.dataset.key;
-  el.innerHTML = '<button type="button" class="minus" aria-label="減らす">−</button><span class="val"></span><button type="button" class="plus" aria-label="増やす">＋</button>';
+  el.innerHTML = '<button type="button" class="minus">−</button>'
+    + '<label class="val"><input type="text" inputmode="numeric" maxlength="3" autocomplete="off"><span class="unit"></span></label>'
+    + '<button type="button" class="plus">＋</button>';
+  el.querySelector('.minus').setAttribute('aria-label', t('decrease'));
+  el.querySelector('.plus').setAttribute('aria-label', t('increase'));
+  const input = el.querySelector('input');
   const move = (dir) => {
-    const list = steps(key);
-    let i = list.indexOf(getVal(key));
-    if (i < 0) i = list.findIndex((x) => x >= getVal(key)), i = i < 0 ? list.length - 1 : i;
-    i += dir;
-    if (key === 'resetHour') i = (i + list.length) % list.length; // 時刻は一周する
-    i = Math.max(0, Math.min(list.length - 1, i));
-    setVal(key, list[i]);
+    const list = steps(key), cur = s[field(key)];
+    let i;
+    if (dir > 0) { i = list.findIndex((x) => x > cur); if (i < 0) i = key === 'resetHour' ? 0 : list.length - 1; }
+    else { i = list.length - 1 - [...list].reverse().findIndex((x) => x < cur); if (i >= list.length) i = key === 'resetHour' ? list.length - 1 : 0; }
+    s[field(key)] = list[i];
     commit();
   };
   el.querySelector('.minus').addEventListener('click', () => move(-1));
   el.querySelector('.plus').addEventListener('click', () => move(1));
+  // キーボードでの直接入力（Enter か、欄から離れたときに確定。↑↓キーでも増減）
+  const fromInput = () => {
+    const n = parseInt(input.value.replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0)), 10);
+    if (Number.isFinite(n) && n !== s[field(key)]) { s[field(key)] = clamp(key, n); commit(); } else paint();
+    input.value = s[field(key)];
+  };
+  input.addEventListener('change', fromInput);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); fromInput(); input.select(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); move(1); input.select(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); move(-1); input.select(); }
+    else if (e.key === 'Escape') { paint(); input.blur(); }
+  });
+  input.addEventListener('focus', () => input.select());
+  input.addEventListener('input', () => { input.style.width = `${Math.max(1, input.value.length) + 0.6}ch`; });
 });
 
 document.querySelectorAll('input[name=type]').forEach((r) => r.addEventListener('change', () => { s.limitType = r.value; commit(); }));
@@ -51,14 +75,19 @@ function paint() {
   document.querySelector(`input[name=type][value=${s.limitType}]`).checked = true;
   document.querySelector(`input[name=reset][value=${s.resetMode}]`).checked = true;
   $('opensOn').checked = s.opensOn;
-  $('amountLabel').textContent = s.limitType === 'time' ? '上限の時間' : '上限の回数';
+  $('amountLabel').textContent = s.limitType === 'time' ? t('labelTime') : t('labelCount');
   $('opensRow').classList.toggle('dim', !s.opensOn);
   document.querySelectorAll('.stepper').forEach((el) => {
-    const key = el.dataset.key, list = steps(key), v = getVal(key);
-    el.querySelector('.val').textContent = label(key, v);
+    const key = el.dataset.key, list = steps(key), v = s[field(key)];
+    const input = el.querySelector('input');
+    if (document.activeElement !== input) input.value = v;
+    input.style.width = `${Math.max(1, String(input.value).length) + 0.6}ch`;
+    el.querySelector('.unit').textContent = unit(key);
+    const off = key === 'maxOpens' && !s.opensOn;
     const wrap = key === 'resetHour';
-    el.querySelector('.minus').disabled = (!wrap && v <= list[0]) || (key === 'maxOpens' && !s.opensOn);
-    el.querySelector('.plus').disabled = (!wrap && v >= list[list.length - 1]) || (key === 'maxOpens' && !s.opensOn);
+    input.disabled = off;
+    el.querySelector('.minus').disabled = off || (!wrap && v <= list[0]);
+    el.querySelector('.plus').disabled = off || (!wrap && v >= list[list.length - 1]);
   });
 }
 
@@ -70,26 +99,58 @@ function flash(text) {
 
 function commit() {
   paint();
-  chrome.storage.local.set({ settings: { ...s } }, () => { flash('保存しました'); refreshStatus(); });
+  chrome.storage.local.set({ settings: { ...s } }, () => { flash(t('saved')); refreshStatus(); });
 }
 
-function dayKey(h) {
+function dayKey(h, back = 0) {
   const d = new Date(Date.now() - h * 3600e3);
+  d.setDate(d.getDate() - back);
   return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 }
+function minutes(sec) { return Math.floor((sec || 0) / 60); }
 
 function refreshStatus() {
-  chrome.storage.local.get(['daily', 'session'], (r) => {
-    const daily = r.daily && r.daily.day === dayKey(s.resetHour) ? r.daily : { opens: 0, count: 0, seconds: 0 };
-    const u = s.resetMode === 'daily' ? daily : (r.session || { count: 0, seconds: 0 });
+  chrome.storage.local.get(['daily', 'session', 'history'], (r) => {
+    const empty = { opens: 0, count: 0, seconds: 0, views: 0, watch: 0 };
+    const daily = r.daily && r.daily.day === dayKey(s.resetHour) ? { ...empty, ...r.daily } : empty;
+    const u = s.resetMode === 'daily' ? daily : (r.session || empty);
     const time = s.limitType === 'time';
-    const used = time ? Math.floor((u.seconds || 0) / 60) : u.count || 0;
+    const used = time ? minutes(u.seconds) : u.count || 0;
     const max = time ? s.minutes : s.limit;
-    const unit = time ? '分' : 'スクロール';
-    const scope = s.resetMode === 'daily' ? '今日' : '今回';
-    let html = used >= max ? `<b>ブロック中</b>（${scope}の上限 ${max}${unit}）` : `${scope}の使用量 <b>${used}</b> / ${max}${unit}`;
-    if (s.opensOn) html += `<br>今日開いた回数 <b>${Math.min(daily.opens, s.maxOpens)}</b> / ${s.maxOpens}回`;
-    $('status').innerHTML = html;
+    const unitText = time ? t('unitMin') : t('unitScrolls');
+    const scope = s.resetMode === 'daily' ? t('scopeToday') : t('scopeSession');
+    const over = time ? (u.seconds || 0) >= max * 60 : used >= max;
+    let html = over ? t('statusBlocked', scope, max, unitText) : t('statusUsage', scope, used, max, unitText);
+    if (s.opensOn) html += '<br>' + t('statusOpens', Math.min(daily.opens, s.maxOpens), s.maxOpens);
+    $('status').innerHTML = html; // 文言は拡張機能に同梱したもの、値は数値のみ
+
+    $('stViews').textContent = t('unitViews', daily.views);
+    $('stWatch').textContent = t('unitMinutes', minutes(daily.watch));
+    $('stOpens').textContent = t('unitTimes', daily.opens);
+    drawChart(daily, r.history || {});
+  });
+}
+
+function drawChart(today, history) {
+  const days = [];
+  for (let back = 6; back >= 0; back--) {
+    const key = dayKey(s.resetHour, back);
+    const rec = back === 0 ? today : history[key] || {};
+    const d = new Date(Date.now() - s.resetHour * 3600e3);
+    d.setDate(d.getDate() - back);
+    days.push({ views: rec.views || 0, label: d.toLocaleDateString(chrome.i18n.getUILanguage(), { weekday: 'narrow' }), today: back === 0 });
+  }
+  const top = Math.max(1, ...days.map((d) => d.views));
+  const chart = $('chart');
+  chart.textContent = '';
+  days.forEach((d) => {
+    const col = document.createElement('div');
+    col.className = 'col' + (d.today ? ' today' : '');
+    const num = document.createElement('div'); num.className = 'num'; num.textContent = d.views;
+    const bar = document.createElement('div'); bar.className = 'bar'; bar.style.height = `${Math.round((d.views / top) * 40)}px`;
+    const day = document.createElement('div'); day.className = 'day'; day.textContent = d.label;
+    col.append(num, bar, day);
+    chart.appendChild(col);
   });
 }
 
@@ -99,9 +160,25 @@ chrome.storage.local.get('settings', (r) => {
   refreshStatus();
 });
 
-$('resetNow').addEventListener('click', () => {
-  chrome.storage.local.set({
-    daily: { day: '', opens: 0, count: 0, seconds: 0, from: 'popup', t: Date.now() },
-    session: { count: 0, seconds: 0 },
-  }, () => { flash('リセットしました'); refreshStatus(); });
+// 「今すぐカウントをリセット」は2回確認してから実行する（簡単に制限を外せないように）
+function showStep(n) {
+  $('resetNow').hidden = n !== 0;
+  $('confirm1').hidden = n !== 1;
+  $('confirm2').hidden = n !== 2;
+}
+$('resetNow').addEventListener('click', () => showStep(1));
+$('c1No').addEventListener('click', () => showStep(0));
+$('c2No').addEventListener('click', () => showStep(0));
+$('c1Yes').addEventListener('click', () => showStep(2));
+$('c2Yes').addEventListener('click', () => {
+  showStep(0);
+  chrome.storage.local.get('daily', (r) => {
+    const cur = r.daily && r.daily.day === dayKey(s.resetHour) ? r.daily : {};
+    chrome.storage.local.set({
+      // 制限のカウントだけ戻す。今日の記録（見た本数・視聴時間）は残す
+      daily: { day: dayKey(s.resetHour), opens: 0, count: 0, seconds: 0, views: cur.views || 0, watch: cur.watch || 0, from: 'popup', t: Date.now() },
+      session: { count: 0, seconds: 0 },
+    }, () => { flash(t('resetDone')); refreshStatus(); });
+  });
 });
+chrome.storage.onChanged.addListener(() => refreshStatus());
