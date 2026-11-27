@@ -1,21 +1,26 @@
 // 設定画面: 数値は −／＋ のクリックでも、キーボードでの直接入力でも変えられる。変更はすぐ保存される
-const DEFAULTS = { limitType: 'count', limit: 3, minutes: 5, resetMode: 'open', opensOn: false, maxOpens: 3, resetHour: 4 };
+const DEFAULTS = { limitType: 'count', limit: 3, minutes: 5, resetMode: 'open', opensOn: false, maxOpens: 3, resetHour: 4, badgeOn: false, badgeCount: 3, badgeMinutes: 2 };
 const $ = (id) => document.getElementById(id);
 const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String)) || key;
 const MINUTES = [1, 2, 3, 5, 10, 15, 20, 30, 45, 60, 90, 120, 180, 240];
 // 直接入力で受け付ける範囲
-const BOUNDS = { limit: [1, 99], minutes: [1, 240], maxOpens: [1, 20], resetHour: [0, 23] };
+const BOUNDS = { limit: [1, 99], minutes: [1, 240], maxOpens: [1, 20], resetHour: [0, 23], badgeCount: [1, 99], badgeMinutes: [1, 240] };
 let s = { ...DEFAULTS };
 let msgTimer = null;
 
 document.documentElement.lang = chrome.i18n.getUILanguage().startsWith('ja') ? 'ja' : 'en';
 document.querySelectorAll('[data-i18n]').forEach((e) => { e.textContent = t(e.dataset.i18n); });
 
-function field(key) { return key === 'amount' ? (s.limitType === 'time' ? 'minutes' : 'limit') : key; }
+function field(key) {
+  const time = s.limitType === 'time';
+  if (key === 'amount') return time ? 'minutes' : 'limit';
+  if (key === 'badgeFrom') return time ? 'badgeMinutes' : 'badgeCount';
+  return key;
+}
 // −／＋ ボタンで移動する値の候補
 function steps(key) {
   const f = field(key);
-  if (f === 'minutes') return MINUTES;
+  if (f === 'minutes' || f === 'badgeMinutes') return MINUTES;
   const [a, b] = BOUNDS[f];
   const r = [];
   for (let i = a; i <= b; i++) r.push(i);
@@ -23,7 +28,7 @@ function steps(key) {
 }
 function unit(key) {
   const f = field(key);
-  if (f === 'minutes') return t('sufMinutes');
+  if (f === 'minutes' || f === 'badgeMinutes') return t('sufMinutes');
   if (f === 'resetHour') return t('sufHour');
   return t('sufTimes');
 }
@@ -70,6 +75,7 @@ document.querySelectorAll('.stepper').forEach((el) => {
 document.querySelectorAll('input[name=type]').forEach((r) => r.addEventListener('change', () => { s.limitType = r.value; commit(); }));
 document.querySelectorAll('input[name=reset]').forEach((r) => r.addEventListener('change', () => { s.resetMode = r.value; commit(); }));
 $('opensOn').addEventListener('change', () => { s.opensOn = $('opensOn').checked; commit(); });
+$('badgeOn').addEventListener('change', () => { s.badgeOn = $('badgeOn').checked; commit(); });
 
 function paint() {
   document.querySelector(`input[name=type][value=${s.limitType}]`).checked = true;
@@ -77,13 +83,16 @@ function paint() {
   $('opensOn').checked = s.opensOn;
   $('amountLabel').textContent = s.limitType === 'time' ? t('labelTime') : t('labelCount');
   $('opensRow').classList.toggle('dim', !s.opensOn);
+  $('badgeOn').checked = s.badgeOn;
+  $('badgeLabel').textContent = s.limitType === 'time' ? t('labelBadgeTime') : t('labelBadgeCount');
+  $('badgeRow').classList.toggle('dim', !s.badgeOn);
   document.querySelectorAll('.stepper').forEach((el) => {
     const key = el.dataset.key, list = steps(key), v = s[field(key)];
     const input = el.querySelector('input');
     if (document.activeElement !== input) input.value = v;
     input.style.width = `${Math.max(1, String(input.value).length) + 0.6}ch`;
     el.querySelector('.unit').textContent = unit(key);
-    const off = key === 'maxOpens' && !s.opensOn;
+    const off = (key === 'maxOpens' && !s.opensOn) || (key === 'badgeFrom' && !s.badgeOn);
     const wrap = key === 'resetHour';
     input.disabled = off;
     el.querySelector('.minus').disabled = off || (!wrap && v <= list[0]);

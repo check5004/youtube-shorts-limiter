@@ -137,6 +137,21 @@
   "hintOpens": {
     "message": "ホームなどからショートに入るたびに1回"
   },
+  "secBadge": {
+    "message": "残りの表示"
+  },
+  "optBadgeOn": {
+    "message": "画面の右下に残りを表示する"
+  },
+  "labelBadgeCount": {
+    "message": "残り何回から表示"
+  },
+  "labelBadgeTime": {
+    "message": "残り何分から表示"
+  },
+  "hintBadge": {
+    "message": "残りがこの数以下になったら表示します（上限と同じにすると常に表示）"
+  },
   "secDay": {
     "message": "1日の区切り"
   },

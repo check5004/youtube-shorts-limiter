@@ -6,7 +6,8 @@
   // resetMode : 'open'（ショートを開くたびにリセット）| 'daily'（1日の合計で制限）
   // opensOn / maxOpens : 1日にショートを開ける回数の上限
   // resetHour : 1日の区切りの時刻
-  const DEFAULTS = { limitType: 'count', limit: 3, minutes: 5, resetMode: 'open', opensOn: false, maxOpens: 3, resetHour: 4 };
+  // badgeOn / badgeCount / badgeMinutes : 残りの表示（既定オフ）。残りがこの数以下になったら表示
+  const DEFAULTS = { limitType: 'count', limit: 3, minutes: 5, resetMode: 'open', opensOn: false, maxOpens: 3, resetHour: 4, badgeOn: false, badgeCount: 3, badgeMinutes: 2 };
   const HISTORY_DAYS = 30;
   const TAB = Math.random().toString(36).slice(2);
   const t = (key, ...subs) => chrome.i18n.getMessage(key, subs.map(String)) || key;
@@ -128,25 +129,26 @@
   }
   function goHome() { hideOverlay(); location.href = location.origin + '/'; }
 
-  // 右下の残り表示（残りわずかになると色が変わる）
+  // 右下の残り表示（設定でオンのとき、残りがしきい値以下になったら表示。残りわずかで色が変わる）
+  function badgeInfo() {
+    const u = usage();
+    if (settings.limitType === 'time') {
+      const left = settings.minutes * 60 - u.seconds;
+      return { show: left <= settings.badgeMinutes * 60, text: t('badgeTime', fmt(left)), warn: left <= 60 };
+    }
+    const left = Math.max(0, settings.limit - u.count);
+    return { show: left <= settings.badgeCount, text: t('badgeCount', left), warn: left <= 1 };
+  }
   function updateBadge(reason) {
-    if (!onShorts() || reason) { if (badge) badge.remove(); badge = null; return; }
+    const info = settings.badgeOn && onShorts() && !reason ? badgeInfo() : null;
+    if (!info || !info.show) { if (badge) badge.remove(); badge = null; return; }
     if (!badge || !document.documentElement.contains(badge)) {
       badge = el('div');
       badge.id = 'ysl-badge';
       (document.body || document.documentElement).appendChild(badge);
     }
-    const u = usage();
-    let text, warn;
-    if (settings.limitType === 'time') {
-      const left = settings.minutes * 60 - u.seconds;
-      text = t('badgeTime', fmt(left));
-      warn = left <= 60;
-    } else {
-      const left = Math.max(0, settings.limit - u.count);
-      text = t('badgeCount', left);
-      warn = left <= 1;
-    }
+    let text = info.text;
+    const warn = info.warn;
     if (settings.opensOn) text += ' · ' + t('badgeOpens', Math.max(0, settings.maxOpens - daily.opens));
     badge.textContent = text;
     badge.classList.toggle('ysl-warn', warn);
