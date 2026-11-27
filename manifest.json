@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "ショート制限 (YouTube Shorts Limiter)",
+  "version": "1.3.0",
+  "description": "YouTubeショートのスクロール回数や視聴時間を制限し、上限に達するとブロック画面を表示します。",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["overlay.css"],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "ショート制限",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+  },
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" }
+}
