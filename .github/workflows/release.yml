@@ -1,0 +1,38 @@
+name: Release
+
+# 自動リリース: main の manifest.json が変わり、その version のリリースがまだ無ければ
+# v<version> のタグとリリースを作り、ZIPを2つ添付します（同じ version なら何もしません）。
+# 手動で動かすときは Actions タブ →「Release」→「Run workflow」。
+# ZIPの中身は scripts/build-zip.sh が決めます（拡張機能のファイルが増えてもこのファイルの修正は不要）。
+on:
+  push:
+    branches: [main]
+    paths: [manifest.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ZIPを作ってリリース
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER="v$(jq -r .version manifest.json)"
+          if gh release view "$VER" >/dev/null 2>&1; then
+            echo "$VER はリリース済みなので何もしません"
+            exit 0
+          fi
+          bash scripts/build-zip.sh
+          DEV="dist/shorts-limiter-$VER.zip"
+          STORE="dist/shorts-limiter-store-$VER.zip"
+          NOTES="Assets の shorts-limiter-$VER.zip をダウンロードして展開し、chrome://extensions でデベロッパーモードをオンにして「パッケージ化されていない拡張機能を読み込む」から shorts-limiter フォルダを選んでください（Source code のZIPではありません）。shorts-limiter-store-$VER.zip は Chromeウェブストア提出用です。詳しくは README を参照。"
+          gh release create "$VER" "$DEV" "$STORE" --target "$GITHUB_SHA" --title "ショート制限 $VER" --notes "$NOTES"
