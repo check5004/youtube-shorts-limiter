@@ -137,6 +137,21 @@
   "hintOpens": {
     "message": "Each time you enter Shorts from Home, etc. counts as one"
   },
+  "secBadge": {
+    "message": "Remaining badge"
+  },
+  "optBadgeOn": {
+    "message": "Show what's left in the corner"
+  },
+  "labelBadgeCount": {
+    "message": "Show from (scrolls left)"
+  },
+  "labelBadgeTime": {
+    "message": "Show from (minutes left)"
+  },
+  "hintBadge": {
+    "message": "Appears when what's left drops to this number (set it to your limit to always show it)"
+  },
   "secDay": {
     "message": "Start of the day"
   },
