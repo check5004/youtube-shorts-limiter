@@ -15,6 +15,7 @@
   let sess = freshSess();   // このタブの今回のセッション（開くたびモード用）
   let daily = freshDaily(); // 1日の合計（全タブで共有）。views / watch は記録用で、制限には使わない
   let lastId = null;        // このタブで直前に見ていたショート
+  let seen = new Set();     // 今回のセッションで見たショート（戻ったときは数えない）
   let overlay = null, overlayKey = '', badge = null, pauseTimer = null, ready = false, tick = 0;
 
   function freshSess() { return { count: 0, seconds: 0, openBlocked: false }; }
@@ -185,12 +186,14 @@
     if (!lastId) {
       // ショートを新しく開いた（ホームなどから / 直接開いた）
       sess = freshSess();
+      seen = new Set([id]);
       daily.opens += 1;
       if (settings.opensOn && daily.opens > settings.maxOpens) sess.openBlocked = true;
       if (!blockReason()) daily.views += 1;
       save();
-    } else if (lastId !== id && !blockReason()) {
-      // 別のショートへ移動 = 1スクロール
+    } else if (lastId !== id && !seen.has(id) && !blockReason()) {
+      // まだ見ていないショートへ進んだ = 1スクロール（上に戻って見たことのあるショートに戻ったときは数えない）
+      seen.add(id);
       daily.views += 1;
       if (settings.limitType === 'count') {
         sess.count += 1;
