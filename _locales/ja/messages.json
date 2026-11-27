@@ -1,0 +1,286 @@
+{
+  "extName": {
+    "message": "ショート制限 for YouTube"
+  },
+  "extShortName": {
+    "message": "ショート制限"
+  },
+  "extDescription": {
+    "message": "YouTubeショートのスクロール回数・視聴時間・1日に開ける回数を制限して、見すぎを防ぎます。"
+  },
+  "titleToday": {
+    "message": "今日のショートはここまで"
+  },
+  "titleSession": {
+    "message": "ショートはここまで"
+  },
+  "resetsToday": {
+    "message": "今日の$p1$時にリセットされます。",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "resetsTomorrow": {
+    "message": "明日の$p1$時にリセットされます。",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opensUsedUp": {
+    "message": "今日ショートを開ける回数（$p1$回）を使い切りました。",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "timeReached": {
+    "message": "ショートの視聴時間が上限（$p1$分）に達しました。",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "countReached": {
+    "message": "ショートのスクロールが上限（$p1$回）に達しました。",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opensLeft": {
+    "message": "今日はあと$p1$回ショートを開けます。",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opensNone": {
+    "message": "今日開ける回数はもう残っていません。"
+  },
+  "goHome": {
+    "message": "ホームへ戻る"
+  },
+  "badgeTime": {
+    "message": "残り $p1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeCount": {
+    "message": "残り $p1$ スクロール",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeOpens": {
+    "message": "今日あと$p1$回開けます",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "ショート制限"
+  },
+  "secLimit": {
+    "message": "制限のしかた"
+  },
+  "optCount": {
+    "message": "スクロール回数"
+  },
+  "optTime": {
+    "message": "視聴時間"
+  },
+  "labelCount": {
+    "message": "上限の回数"
+  },
+  "labelTime": {
+    "message": "上限の時間"
+  },
+  "secReset": {
+    "message": "リセットのタイミング"
+  },
+  "optOpen": {
+    "message": "ショートを開くたび"
+  },
+  "hintOpen": {
+    "message": "ホームなどからショートを開き直すとリセット"
+  },
+  "optDaily": {
+    "message": "1日ごと"
+  },
+  "hintDaily": {
+    "message": "1日の合計で数える（全タブ共通）"
+  },
+  "secOpens": {
+    "message": "1日にショートを開ける回数"
+  },
+  "optOpensOn": {
+    "message": "回数を制限する"
+  },
+  "labelOpens": {
+    "message": "1日に開ける回数"
+  },
+  "hintOpens": {
+    "message": "ホームなどからショートに入るたびに1回"
+  },
+  "secDay": {
+    "message": "1日の区切り"
+  },
+  "labelResetHour": {
+    "message": "リセット時刻"
+  },
+  "secStats": {
+    "message": "今日の記録"
+  },
+  "statViews": {
+    "message": "見たショート"
+  },
+  "statWatch": {
+    "message": "視聴時間"
+  },
+  "statOpens": {
+    "message": "開いた回数"
+  },
+  "chartCaption": {
+    "message": "直近7日間に見たショートの本数"
+  },
+  "unitTimes": {
+    "message": "$p1$回",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "unitMinutes": {
+    "message": "$p1$分",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "unitHour": {
+    "message": "$p1$時",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "unitViews": {
+    "message": "$p1$本",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "sufTimes": {
+    "message": "回"
+  },
+  "sufMinutes": {
+    "message": "分"
+  },
+  "sufHour": {
+    "message": "時"
+  },
+  "unitScrolls": {
+    "message": "スクロール"
+  },
+  "unitMin": {
+    "message": "分"
+  },
+  "scopeToday": {
+    "message": "今日"
+  },
+  "scopeSession": {
+    "message": "今回"
+  },
+  "statusBlocked": {
+    "message": "<b>ブロック中</b>（$p1$の上限 $p2$$p3$）",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      }
+    }
+  },
+  "statusUsage": {
+    "message": "$p1$の使用量 <b>$p2$</b> / $p3$$p4$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      },
+      "p4": {
+        "content": "$4"
+      }
+    }
+  },
+  "statusOpens": {
+    "message": "今日開いた回数 <b>$p1$</b> / $p2$回",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "btnReset": {
+    "message": "今すぐカウントをリセット"
+  },
+  "confirm1": {
+    "message": "カウントをリセットすると、今のブロックが解除されます。本当にリセットしますか？"
+  },
+  "confirm1Yes": {
+    "message": "リセットする"
+  },
+  "confirm2": {
+    "message": "最終確認です。決めた上限を自分で破ることになります。それでもリセットしますか？"
+  },
+  "confirm2Yes": {
+    "message": "それでもリセット"
+  },
+  "cancel": {
+    "message": "やめる"
+  },
+  "saved": {
+    "message": "保存しました"
+  },
+  "resetDone": {
+    "message": "リセットしました"
+  },
+  "decrease": {
+    "message": "減らす"
+  },
+  "increase": {
+    "message": "増やす"
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "extName": {
+    "message": "Shorts Limiter for YouTube"
+  },
+  "extShortName": {
+    "message": "Shorts Limiter"
+  },
+  "extDescription": {
+    "message": "Stop endless Shorts scrolling on YouTube: limit scrolls, watch time, or daily opens, then show a block screen."
+  },
+  "titleToday": {
+    "message": "That's it for Shorts today"
+  },
+  "titleSession": {
+    "message": "That's it for Shorts"
+  },
+  "resetsToday": {
+    "message": "Resets today at $p1$:00.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "resetsTomorrow": {
+    "message": "Resets tomorrow at $p1$:00.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opensUsedUp": {
+    "message": "You've used all of today's Shorts opens ($p1$).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "timeReached": {
+    "message": "You've reached your Shorts watch-time limit ($p1$ min).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "countReached": {
+    "message": "You've reached your Shorts scroll limit ($p1$).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opensLeft": {
+    "message": "You can open Shorts $p1$ more time(s) today.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "opensNone": {
+    "message": "No Shorts opens left today."
+  },
+  "goHome": {
+    "message": "Back to Home"
+  },
+  "badgeTime": {
+    "message": "$p1$ left",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeCount": {
+    "message": "$p1$ scrolls left",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeOpens": {
+    "message": "$p1$ opens left today",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupTitle": {
+    "message": "Shorts Limiter"
+  },
+  "secLimit": {
+    "message": "How to limit"
+  },
+  "optCount": {
+    "message": "Number of scrolls"
+  },
+  "optTime": {
+    "message": "Watch time"
+  },
+  "labelCount": {
+    "message": "Scroll limit"
+  },
+  "labelTime": {
+    "message": "Time limit"
+  },
+  "secReset": {
+    "message": "When to reset"
+  },
+  "optOpen": {
+    "message": "Each time you open Shorts"
+  },
+  "hintOpen": {
+    "message": "Resets when you enter Shorts again from Home, etc."
+  },
+  "optDaily": {
+    "message": "Once a day"
+  },
+  "hintDaily": {
+    "message": "Counts the daily total across all tabs"
+  },
+  "secOpens": {
+    "message": "Daily Shorts opens"
+  },
+  "optOpensOn": {
+    "message": "Limit the number of opens"
+  },
+  "labelOpens": {
+    "message": "Opens per day"
+  },
+  "hintOpens": {
+    "message": "Each time you enter Shorts from Home, etc. counts as one"
+  },
+  "secDay": {
+    "message": "Start of the day"
+  },
+  "labelResetHour": {
+    "message": "Reset time"
+  },
+  "secStats": {
+    "message": "Today"
+  },
+  "statViews": {
+    "message": "Shorts watched"
+  },
+  "statWatch": {
+    "message": "Watch time"
+  },
+  "statOpens": {
+    "message": "Opens"
+  },
+  "chartCaption": {
+    "message": "Shorts watched in the last 7 days"
+  },
+  "unitTimes": {
+    "message": "$p1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "unitMinutes": {
+    "message": "$p1$ min",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "unitHour": {
+    "message": "$p1$:00",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "unitViews": {
+    "message": "$p1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "sufTimes": {
+    "message": "times"
+  },
+  "sufMinutes": {
+    "message": "min"
+  },
+  "sufHour": {
+    "message": ":00"
+  },
+  "unitScrolls": {
+    "message": "scrolls"
+  },
+  "unitMin": {
+    "message": "min"
+  },
+  "scopeToday": {
+    "message": "Today"
+  },
+  "scopeSession": {
+    "message": "This session"
+  },
+  "statusBlocked": {
+    "message": "<b>Blocked</b> ($p1$ limit: $p2$ $p3$)",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      }
+    }
+  },
+  "statusUsage": {
+    "message": "$p1$: <b>$p2$</b> / $p3$ $p4$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      },
+      "p3": {
+        "content": "$3"
+      },
+      "p4": {
+        "content": "$4"
+      }
+    }
+  },
+  "statusOpens": {
+    "message": "Opens today: <b>$p1$</b> / $p2$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "btnReset": {
+    "message": "Reset counts now"
+  },
+  "confirm1": {
+    "message": "Resetting the counts removes the current block. Are you sure?"
+  },
+  "confirm1Yes": {
+    "message": "Reset"
+  },
+  "confirm2": {
+    "message": "Last check: this breaks the limit you set for yourself. Reset anyway?"
+  },
+  "confirm2Yes": {
+    "message": "Reset anyway"
+  },
+  "cancel": {
+    "message": "Cancel"
+  },
+  "saved": {
+    "message": "Saved"
+  },
+  "resetDone": {
+    "message": "Counts reset"
+  },
+  "decrease": {
+    "message": "Decrease"
+  },
+  "increase": {
+    "message": "Increase"
+  }
+}
