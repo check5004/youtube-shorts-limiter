@@ -2,6 +2,8 @@
 
 YouTubeショートの見すぎを防ぐChrome拡張機能です。スクロール回数・視聴時間・1日に開ける回数で制限し、上限に達するとブロック画面を表示します。
 
+**[Chromeウェブストアからインストール](https://chromewebstore.google.com/detail/hbflalifpcbneopppdheicgnhilhhbpi)**
+
 ![概要](docs/images/overview.png)
 
 | 上限に達したときのブロック画面 | 残りの表示 | 今日の記録とリセットの2回確認 |
@@ -29,11 +31,17 @@ YouTubeショートの見すぎを防ぐChrome拡張機能です。スクロー�
 
 ## インストール
 
-### Chromeウェブストアから
+### Chromeウェブストアから（おすすめ）
 
-公開準備中です。公開後はここにリンクを載せます。
+1. [Chromeウェブストアのページ](https://chromewebstore.google.com/detail/hbflalifpcbneopppdheicgnhilhhbpi)を開く
+2. 「Chromeに追加」を押し、確認画面で「拡張機能を追加」を押す
+3. 開いていたYouTubeのタブを再読み込みする
+
+ストア版は自動で更新されます。
 
 ### ZIPから（デベロッパーモード）
+
+ストアを使わずに入れたい場合や、ストアに反映される前の最新版を試したい場合の方法です。
 
 1. [Releases](https://github.com/check5004/youtube-shorts-limiter/releases/latest) を開き、**Assets** にある `shorts-limiter-vX.Y.Z.zip` をダウンロードして展開する（「Source code」のZIPではありません）
 2. Chromeで `chrome://extensions` を開く
